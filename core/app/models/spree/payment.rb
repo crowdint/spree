@@ -31,7 +31,7 @@ module Spree
     scope :completed, with_state('completed')
     scope :pending, with_state('pending')
     scope :failed, with_state('failed')
-    scope :valid, where('state NOT IN (?)', %w(failed invalid))
+    scope :valid, where("#{quoted_table_name}.state NOT IN (?)", %w(failed invalid))
 
     after_rollback :persist_invalid
 
@@ -94,7 +94,7 @@ module Spree
     end
 
     def credit_allowed
-      amount - offsets_total
+      amount - offsets_total.abs
     end
 
     def can_credit?
